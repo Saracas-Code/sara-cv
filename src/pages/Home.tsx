@@ -1,6 +1,8 @@
 import cvData from "../data/cv";
 import "../styles/home.css";
+import { Languages, GraduationCap, FileText } from "lucide-react"
 import LetterGlitch from "../components/LetterGlitch";
+import CVAccordion from "@/components/cv-accordion";
 
 type AnyItem = typeof cvData[number];
 function byType<T extends AnyItem["type"]>(t: T) {
@@ -11,11 +13,69 @@ export default function Home() {
     const personal = cvData.find(byType("personal")) as any;
     const profile = cvData.find(byType("profile")) as any;
 
-    const skills = cvData.filter(byType("skills")) as any[];
     const education = cvData.filter(byType("education")) as any[];
     const experience = cvData.filter(byType("experience")) as any[];
     const projects = cvData.filter(byType("project")) as any[];
     const interests = cvData.find(byType("interests")) as any;
+
+    const languages = cvData.find(byType("languages")) as any
+    const skills = cvData.filter(byType("skills")) as any[]
+    const otherData = cvData.find(byType("other")) as any
+
+    const accordionItems = [
+        {
+        title: "Idiomas",
+        icon: <Languages size={18} />,
+        content: (
+            <div className="accordion-languages">
+            {languages?.items?.map((lang: any, i: number) => (
+                <div key={i} className="language-item">
+                <span className="language-name">{lang.language}</span>
+                <span className="language-level">{lang.level}</span>
+                </div>
+            ))}
+            </div>
+        ),
+        },
+        {
+        title: "Formación Complementaria",
+        icon: <GraduationCap size={18} />,
+        content: (
+            <div className="accordion-skills">
+            {skills?.map((skillGroup: any, i: number) => (
+                <div key={i} className="skill-group">
+                <h4 className="skill-category">
+                    {skillGroup.category === "programming" ? "Habilidades Técnicas" : "Soft Skills"}
+                </h4>
+                <div className="skill-tags">
+                    {skillGroup.items?.map((skill: string, j: number) => (
+                    <span key={j} className="skill-tag">
+                        {skill}
+                    </span>
+                    ))}
+                </div>
+                </div>
+            ))}
+            </div>
+        ),
+        },
+        {
+        title: "Otros Datos de Interés",
+        icon: <FileText size={18} />,
+        content: (
+            <div className="accordion-other">
+            <ul className="other-list">
+                {otherData?.items?.map((item: string, i: number) => (
+                <li key={i} className="other-item">
+                    {item}
+                </li>
+                ))}
+            </ul>
+            </div>
+        ),
+        },
+    ]
+
 
     return (
     <div className="homePage">
@@ -146,6 +206,11 @@ export default function Home() {
                     </article>
                     ))}
                 </div>
+                </div>
+
+                <div className="section" id="mas-info">
+                    <h2 className="sectionTitle">Más Información</h2>
+                    <CVAccordion items={accordionItems} />
                 </div>
 
                 <footer style={{ marginTop: 56, textAlign: "center", color: "rgba(255,255,255,0.6)", fontSize: 14 }}>
